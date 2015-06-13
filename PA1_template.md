@@ -22,7 +22,6 @@ Convert factor to Date for activity_data[,"date"]
 activity_data[,"date"] <- as.Date(activity_data[,"date"], format="%Y-%m-%d")
 ```
 
-
 ## What is mean total number of steps taken per day?
 
 ```r
@@ -149,5 +148,96 @@ is_na_table <- table(is.na(activity_data$steps))
 Total number of missing values: 2304
 
 
+Devise a strategy for filling in all of the missing values in the dataset. The strategy does not need to be sophisticated. For example, you could use the mean/median for that day, or the mean for that 5-minute interval, etc.
+
+
+```r
+#make a copy of the activity_data
+activity_data_withNAfilled <- activity_data 
+
+#loop through row by row
+for(i in 1:nrow(activity_data_withNAfilled)){
+  #We only need to work on NA 
+  if(is.na(activity_data_withNAfilled[i,"steps"])){
+    #fill the NA value with the mean of interval 
+    activity_data_withNAfilled[i,"steps"] <- interval_aggr[interval_aggr$interval==activity_data_withNAfilled[i,"interval"],"steps"]
+  }
+}
+
+#Proof there is no more NA
+table(is.na(activity_data_withNAfilled$steps))
+```
+
+```
+## 
+## FALSE 
+## 17568
+```
+
+Make a histogram of the total number of steps taken each day 
+
+```r
+total_step_per_day2 <- aggregate(steps ~ date, data=activity_data_withNAfilled, sum, na.rm=TRUE)
+hist(total_step_per_day2$steps, main="Total number of steps taken each day ", col="red" )
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-12-1.png) 
+
+mean
+
+```r
+mean(total_step_per_day2$steps, na.rm=TRUE)
+```
+
+```
+## [1] 10766.19
+```
+
+medium
+
+```r
+median(total_step_per_day2$steps, na.rm=TRUE)
+```
+
+```
+## [1] 10766.19
+```
+
 
 ## Are there differences in activity patterns between weekdays and weekends?
+
+
+Create a new factor variable in the dataset with two levels – “weekday” and “weekend” indicating whether a given date is a weekday or weekend day.
+
+
+```r
+#Create a new variable called day, weekdays would return Monday, Tuesday.... 
+activity_data_withNAfilled$day <- weekdays(activity_data_withNAfilled$date)
+
+weekday_or_weekend <- function(day){
+  if(day == "Saturday" || day == "Sunday")
+    "weekend"
+  else
+    "weekday"
+}  
+
+#Loop through the list, add a variable to indicate if it is a weekday or not
+activity_data_withNAfilled$weekday_weekend <- sapply(activity_data_withNAfilled$day, weekday_or_weekend)
+```
+
+
+Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all weekday days or weekend days (y-axis). See the README file in the GitHub repository to see an example of what this plot should look like using simulated data.
+
+
+```r
+weekday_weekend_aggr <- aggregate(steps ~ interval + weekday_weekend, data=activity_data_withNAfilled,mean)
+
+par(mfrow=c(1,2))
+
+#Weekday plot
+  plot(x=weekday_weekend_aggr[weekday_weekend_aggr$weekday_weekend=="weekday",]$interval, y = weekday_weekend_aggr[weekday_weekend_aggr$weekday_weekend=="weekday",]$steps, type="l", main="Weekday", xlab="Interval", ylab="Steps")
+
+  plot(x=weekday_weekend_aggr[weekday_weekend_aggr$weekday_weekend=="weekend",]$interval, y = weekday_weekend_aggr[weekday_weekend_aggr$weekday_weekend=="weekend",]$steps, type="l", main="Weekend", xlab="Interval", ylab="Steps")
+```
+
+![](PA1_template_files/figure-html/unnamed-chunk-16-1.png) 
