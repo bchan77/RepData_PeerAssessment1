@@ -237,7 +237,8 @@ par(mfrow=c(1,2))
 #Weekday plot
   plot(x=weekday_weekend_aggr[weekday_weekend_aggr$weekday_weekend=="weekday",]$interval, y = weekday_weekend_aggr[weekday_weekend_aggr$weekday_weekend=="weekday",]$steps, type="l", main="Weekday", xlab="Interval", ylab="Steps")
 
-  plot(x=weekday_weekend_aggr[weekday_weekend_aggr$weekday_weekend=="weekend",]$interval, y = weekday_weekend_aggr[weekday_weekend_aggr$weekday_weekend=="weekend",]$steps, type="l", main="Weekend", xlab="Interval", ylab="Steps")
+  plot(x=weekday_weekend_aggr[weekday_weekend_aggr$weekday_weekend=="weekend",]$interval, y = weekday_weekend_aggr[weekday_weekend_aggr$weekday_weekend=="weekend",]$steps, type="l", main="Weekend
+       ", xlab="Interval", ylab="Steps")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-16-1.png) 
