@@ -232,7 +232,7 @@ Make a panel plot containing a time series plot (i.e. type = "l") of the 5-minut
 ```r
 weekday_weekend_aggr <- aggregate(steps ~ interval + weekday_weekend, data=activity_data_withNAfilled,mean)
 
-par(mfrow=c(1,2))
+par(mfrow=c(2,1))
 
 #Weekday plot
   plot(x=weekday_weekend_aggr[weekday_weekend_aggr$weekday_weekend=="weekday",]$interval, y = weekday_weekend_aggr[weekday_weekend_aggr$weekday_weekend=="weekday",]$steps, type="l", main="Weekday", xlab="Interval", ylab="Steps")
